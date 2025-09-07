@@ -24,20 +24,24 @@
       }
       model-viewer {
         width: 100%;
-        height: 75vh;
+        height: 70vh;
         background: #222;
       }
-      .ar-button {
+      .controls {
+        display: flex;
+        gap: 10px;
+        margin: 10px;
+      }
+      button {
         background: #ff9800;
         color: white;
         font-size: 18px;
         border: none;
         border-radius: 8px;
-        padding: 12px 24px;
-        margin: 15px;
+        padding: 10px 20px;
         cursor: pointer;
       }
-      .ar-button:active {
+      button:active {
         background: #e68900;
       }
     </style>
@@ -61,20 +65,48 @@
       auto-rotate
       exposure="1"
       shadow-intensity="1"
-      ar-scale="fixed"
       ar-placement="floor"
-      ar-button=".ar-button">
+      scale="0.05 0.05 0.05">
     </model-viewer>
 
-    <button class="ar-button">📱 Place in AR</button>
+    <div class="controls">
+      <button id="scaleDown">➖ Smaller</button>
+      <button id="scaleUp">➕ Larger</button>
+      <button id="arBtn">📱 Place in AR</button>
+    </div>
 
     <script>
       const select = document.getElementById("monumentSelect");
       const viewer = document.getElementById("viewer");
+      const scaleUp = document.getElementById("scaleUp");
+      const scaleDown = document.getElementById("scaleDown");
+      const arBtn = document.getElementById("arBtn");
 
+      let scale = 0.05; // default smaller size
+
+      // change monument
       select.addEventListener("change", () => {
         viewer.src = select.value;
+        viewer.scale = `${scale} ${scale} ${scale}`;
+      });
+
+      // increase scale
+      scaleUp.addEventListener("click", () => {
+        scale += 0.01;
+        viewer.scale = `${scale} ${scale} ${scale}`;
+      });
+
+      // decrease scale
+      scaleDown.addEventListener("click", () => {
+        if (scale > 0.01) scale -= 0.01;
+        viewer.scale = `${scale} ${scale} ${scale}`;
+      });
+
+      // open AR
+      arBtn.addEventListener("click", () => {
+        viewer.activateAR();
       });
     </script>
   </body>
 </html>
+
