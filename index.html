@@ -1,65 +1,97 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>AR Heritage Monuments</title>
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
-    <style>
-      body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #f5f5f5;
-        text-align: center;
-      }
-      #menu {
-        padding: 50px;
-      }
-      button {
-        margin: 10px;
-        padding: 15px 25px;
-        font-size: 18px;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        background: #0077ff;
-        color: white;
-      }
-      button:hover {
-        background: #005bcc;
-      }
-      #ar-scene {
-        display: none;
-        width: 100%;
-        height: 100vh;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Selection Menu -->
-    <div id="menu">
-      <h1>Choose a Monument</h1>
-      <button onclick="startAR('tajmahal.glb')">Taj Mahal</button>
-      <button onclick="startAR('charminar.glb')">Charminar</button>
-      <button onclick="startAR('indiagate.glb')">India Gate</button>
-      <button onclick="startAR('elloracaves.glb')">Ellora Caves</button>
-      <button onclick="startAR('redfort.glb')">Red Fort</button>
-    </div>
+<head>
+  <meta charset="utf-8">
+  <title>AR Heritage Demo (Browser 3D)</title>
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <style>
+    body, html { margin:0; overflow:hidden; font-family: Arial; }
+    .menu {
+      position: fixed; bottom: 10px; left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.9);
+      padding: 12px; border-radius: 12px;
+      display: flex; flex-wrap: wrap; gap: 6px;
+      justify-content: center;
+    }
+    .menu button {
+      padding: 6px 12px; border: none; border-radius: 6px;
+      background: #1976d2; color: white; font-weight: bold;
+      cursor: pointer;
+    }
+    .menu button:hover { background: #0d47a1; }
+    .scale-display { font-size: 14px; font-weight: bold; margin: 0 10px; }
+  </style>
+</head>
+<body>
 
-    <!-- AR Scene -->
-    <a-scene id="ar-scene" embedded arjs>
-      <a-marker id="marker" preset="hiro">
-        <a-entity id="model" scale="0.05 0.05 0.05" position="0 0 0"></a-entity>
-      </a-marker>
-      <a-entity camera></a-entity>
-    </a-scene>
+  <a-scene embedded background="color: #ECECEC">
+    <a-entity id="cameraRig">
+      <a-camera position="0 1.6 3" look-controls wasd-controls></a-camera>
+    </a-entity>
 
-    <script>
-      function startAR(modelFile) {
-        document.getElementById("menu").style.display = "none";
-        document.getElementById("ar-scene").style.display = "block";
-        document.getElementById("model").setAttribute("gltf-model", "url(models/" + modelFile + ")");
+    <a-entity id="model" gltf-model="url(assets/models/taj_mahal.glb)"
+              scale="1 1 1" position="0 0 0"
+              rotation="0 0 0"
+              animation-mixer
+              drag-rotate
+    ></a-entity>
+  </a-scene>
+
+  <div class="menu">
+    <!-- Monument Buttons -->
+    <button onclick="loadModel('taj_mahal.glb')">Taj Mahal</button>
+    <button onclick="loadModel('charminar.glb')">Charminar</button>
+    <button onclick="loadModel('india_gate.glb')">India Gate</button>
+    <button onclick="loadModel('ellora_caves.glb')">Ellora Caves</button>
+    <button onclick="loadModel('red_fort.glb')">Red Fort</button>
+    <!-- Scale Buttons -->
+    <button onclick="scaleDown()">-</button>
+    <span class="scale-display" id="scaleValue">Scale: 1</span>
+    <button onclick="scaleUp()">+</button>
+  </div>
+
+  <script>
+    let model = document.getElementById('model');
+    let currentScale = 1;
+    let currentModel = "taj_mahal.glb";
+
+    function loadModel(file) {
+      currentModel = file;
+      model.setAttribute('gltf-model', 'url(assets/models/' + file + ')');
+      currentScale = 1;
+      model.setAttribute('scale', {x: currentScale, y: currentScale, z: currentScale});
+      document.getElementById('scaleValue').innerText = "Scale: " + currentScale;
+    }
+
+    function scaleUp() {
+      currentScale = +(currentScale * 1.2).toFixed(1);
+      model.setAttribute('scale', {x: currentScale, y: currentScale, z: currentScale});
+      document.getElementById('scaleValue').innerText = "Scale: " + currentScale;
+    }
+
+    function scaleDown() {
+      currentScale = +(currentScale * 0.8).toFixed(1);
+      model.setAttribute('scale', {x: currentScale, y: currentScale, z: currentScale});
+      document.getElementById('scaleValue').innerText = "Scale: " + currentScale;
+    }
+
+    // Simple drag rotate
+    AFRAME.registerComponent('drag-rotate', {
+      init: function () {
+        this.isDragging = false;
+        this.previousX = 0;
+        this.el.addEventListener('mousedown', (e)=>{ this.isDragging = true; this.previousX = e.clientX; });
+        window.addEventListener('mouseup', ()=>{ this.isDragging = false; });
+        window.addEventListener('mousemove', (e)=>{
+          if(!this.isDragging) return;
+          let rotation = this.el.getAttribute('rotation');
+          rotation.y += (e.clientX - this.previousX) * 0.5;
+          this.el.setAttribute('rotation', rotation);
+          this.previousX = e.clientX;
+        });
       }
-    </script>
-  </body>
+    });
+  </script>
+</body>
 </html>
