@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AR Heritage Monuments</title>
+  <title>AR Heritage Explorer</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
   <style>
     body {
@@ -11,181 +11,204 @@
       margin: 0;
       background: #f0f2f5;
       color: #333;
+      text-align: center;
     }
     header {
-      background: linear-gradient(90deg, #0078ff, #00c6ff);
+      background: linear-gradient(90deg,#0078ff,#00c6ff);
       color: white;
       padding: 1rem;
-      text-align: center;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
-    header h1 {
-      margin: 0;
-    }
-    header p {
-      margin: 5px 0 0;
-      font-size: 14px;
-    }
+    header h1 { margin: 0; }
     .cards {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
+      gap: 15px;
       padding: 20px;
     }
     .card {
       background: white;
       border-radius: 12px;
-      padding: 15px;
-      width: 220px;
-      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      padding: 10px;
+      width: 180px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
     }
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    }
+    .card:hover { transform: translateY(-5px); }
     .card img {
       width: 100%;
-      height: 140px;
+      height: 120px;
       object-fit: cover;
-      border-radius: 10px;
+      border-radius: 8px;
     }
-    .card h3 {
-      margin: 10px 0 5px;
-    }
+    .card h3 { margin: 8px 0 5px; font-size: 16px; }
     .card p {
-      font-size: 14px;
+      font-size: 13px;
       color: #555;
       height: 40px;
       overflow: hidden;
     }
-    .buttons {
-      margin-top: 10px;
-      display: flex;
-      justify-content: space-between;
-    }
     .card button {
-      flex: 1;
-      margin: 2px;
-      padding: 8px;
-      border: none;
-      border-radius: 6px;
+      margin-top: 5px;
+      padding: 6px;
+      width: 100%;
       background: #0078ff;
-      color: white;
-      font-size: 14px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .card button:hover {
-      background: #005fcc;
-    }
-    .reset-btn {
-      display: block;
-      margin: 15px auto;
-      padding: 10px 20px;
-      background: crimson;
-      color: white;
       border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .viewer-controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .viewer-controls button {
+      padding: 8px 12px;
+      background: #ff5722;
+      border: none;
+      color: white;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 16px;
-      transition: background 0.2s;
+      font-size: 14px;
     }
-    .reset-btn:hover {
-      background: darkred;
+    #infoBox {
+      background: white;
+      color: black;
+      padding: 12px;
+      border-radius: 10px;
+      margin: 10px auto;
+      width: 90%;
+      max-width: 400px;
+    }
+    model-viewer {
+      width: 100%;
+      height: 60vh;
+      background: #000;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>🏛 AR Heritage Explorer</h1>
-    <p>Place monuments in AR, learn about them, and explore history</p>
-  </header>
 
-  <!-- Cards -->
-  <div class="cards">
-    <div class="card">
-      <img src="tajmahal.jpg" alt="Taj Mahal">
-      <h3>Taj Mahal</h3>
-      <p>A symbol of love built by Shah Jahan in 1648, located in Agra.</p>
-      <div class="buttons">
-        <button onclick="addMonument('tajmahal.glb')">View in AR</button>
-        <button onclick="speakInfo('Taj Mahal, built by Shah Jahan in 1648, is a symbol of love and a UNESCO World Heritage Site.')">🔊</button>
-      </div>
-    </div>
+<header>
+  <h1>🏛 AR Heritage Explorer</h1>
+  <p>Select a monument and place it in AR</p>
+</header>
 
-    <div class="card">
-      <img src="charminar.jpg" alt="Charminar">
-      <h3>Charminar</h3>
-      <p>A landmark mosque built in 1591 in Hyderabad.</p>
-      <div class="buttons">
-        <button onclick="addMonument('charminar.glb')">View in AR</button>
-        <button onclick="speakInfo('Charminar, built in 1591 in Hyderabad, is a historical mosque and major landmark.')">🔊</button>
-      </div>
-    </div>
+<!-- AR Viewer -->
+<model-viewer id="arViewer"
+  ar
+  ar-modes="webxr scene-viewer quick-look"
+  camera-controls
+  shadow-intensity="1"
+  exposure="1"
+  interaction-prompt="auto"
+  ar-placement="floor">
+</model-viewer>
 
-    <div class="card">
-      <img src="indiagate.jpg" alt="India Gate">
-      <h3>India Gate</h3>
-      <p>War memorial built in 1931 in New Delhi.</p>
-      <div class="buttons">
-        <button onclick="addMonument('indiagate.glb')">View in AR</button>
-        <button onclick="speakInfo('India Gate, built in 1931, is a war memorial in New Delhi honoring Indian soldiers.')">🔊</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <img src="ellora.jpg" alt="Ellora Caves">
-      <h3>Ellora Caves</h3>
-      <p>Rock-cut temples dating back to the 6th century in Maharashtra.</p>
-      <div class="buttons">
-        <button onclick="addMonument('ellora.glb')">View in AR</button>
-        <button onclick="speakInfo('Ellora Caves, dating back to the 6th century, are rock-cut temples in Maharashtra, India.')">🔊</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <img src="redfort.jpg" alt="Red Fort">
-      <h3>Red Fort</h3>
-      <p>A Mughal fort built in 1648 in Delhi by Shah Jahan.</p>
-      <div class="buttons">
-        <button onclick="addMonument('redfort.glb')">View in AR</button>
-        <button onclick="speakInfo('The Red Fort, built in 1648 by Shah Jahan in Delhi, is a symbol of Mughal architecture.')">🔊</button>
-      </div>
-    </div>
+<!-- Cards -->
+<div class="cards">
+  <div class="card">
+    <img src="tajmahal.jpg" alt="Taj Mahal">
+    <h3>Taj Mahal</h3>
+    <p>Built by Shah Jahan in 1648, Agra, India</p>
+    <button onclick="selectMonument('taj_mahal.glb','Taj Mahal','Built by Shah Jahan in 1648, Agra, India')">View in AR</button>
   </div>
+  <div class="card">
+    <img src="charminar.jpg" alt="Charminar">
+    <h3>Charminar</h3>
+    <p>Historical mosque built in 1591, Hyderabad</p>
+    <button onclick="selectMonument('charminar.glb','Charminar','Historical mosque built in 1591, Hyderabad')">View in AR</button>
+  </div>
+  <div class="card">
+    <img src="indiagate.jpg" alt="India Gate">
+    <h3>India Gate</h3>
+    <p>War memorial built in 1931, New Delhi</p>
+    <button onclick="selectMonument('india_gate.glb','India Gate','War memorial built in 1931, New Delhi')">View in AR</button>
+  </div>
+  <div class="card">
+    <img src="ellora_caves.jpg" alt="Ellora Caves">
+    <h3>Ellora Caves</h3>
+    <p>Rock-cut temples dating back to 6th century, Maharashtra</p>
+    <button onclick="selectMonument('ellora_caves.glb','Ellora Caves','Rock-cut temples dating back to 6th century, Maharashtra')">View in AR</button>
+  </div>
+  <div class="card">
+    <img src="redfort.jpg" alt="Red Fort">
+    <h3>Red Fort</h3>
+    <p>Mughal fort built in 1648, Delhi</p>
+    <button onclick="selectMonument('red_fort.glb','Red Fort','Mughal fort built in 1648, Delhi')">View in AR</button>
+  </div>
+</div>
 
-  <button class="reset-btn" onclick="resetAR()">🔄 Reset AR</button>
+<!-- Info and Controls -->
+<div id="infoBox">
+  <h3 id="monumentTitle"></h3>
+  <p id="monumentDesc"></p>
+  <div class="viewer-controls">
+    <button onclick="zoomIn()">➕ Zoom In</button>
+    <button onclick="zoomOut()">➖ Zoom Out</button>
+    <button onclick="rotateModel()">🔄 Rotate</button>
+    <button onclick="resetModel()">↩ Reset</button>
+    <button onclick="speakDesc()">🔊 Listen</button>
+  </div>
+  <button onclick="resetAR()" style="margin-top:8px;background:crimson;width:100%">Reset AR</button>
+</div>
 
-  <script>
-    function addMonument(modelFile) {
-      let newModel = document.createElement("model-viewer");
-      newModel.setAttribute("src", modelFile);
-      newModel.setAttribute("ar", "");
-      newModel.setAttribute("ar-placement", "floor");
-      newModel.setAttribute("camera-controls", "");
-      newModel.setAttribute("disable-zoom", "");
-      newModel.setAttribute("shadow-intensity", "1");
-      newModel.setAttribute("scale", "0.3 0.3 0.3"); 
-      newModel.style.width = "0";
-      newModel.style.height = "0";
+<script>
+  const viewer = document.getElementById("arViewer");
+  const titleEl = document.getElementById("monumentTitle");
+  const descEl = document.getElementById("monumentDesc");
 
-      document.body.appendChild(newModel);
-      newModel.activateAR();
-    }
+  let currentScale = 0.5;
+  let rotationY = 0;
 
-    function resetAR() {
-      document.querySelectorAll("model-viewer").forEach(m => m.remove());
-      alert("AR session reset. You can start placing monuments again!");
-    }
+  function selectMonument(src, name, desc) {
+    viewer.setAttribute("src", src);
+    viewer.setAttribute("scale", `${currentScale} ${currentScale} ${currentScale}`);
+    viewer.setAttribute("rotation", `0 0 0`);
+    rotationY = 0;
+    titleEl.innerText = name;
+    descEl.innerText = desc;
+    viewer.activateAR();
+  }
 
-    function speakInfo(text) {
-      let msg = new SpeechSynthesisUtterance(text);
-      msg.lang = "en-IN"; // Indian English voice
-      window.speechSynthesis.speak(msg);
-    }
-  </script>
+  function zoomIn() {
+    currentScale += 0.1;
+    viewer.setAttribute("scale", `${currentScale} ${currentScale} ${currentScale}`);
+  }
+  function zoomOut() {
+    currentScale = Math.max(0.1,currentScale-0.1);
+    viewer.setAttribute("scale", `${currentScale} ${currentScale} ${currentScale}`);
+  }
+  function rotateModel() {
+    rotationY += 30;
+    viewer.setAttribute("rotation", `0 ${rotationY} 0`);
+  }
+  function resetModel() {
+    currentScale = 0.5;
+    rotationY = 0;
+    viewer.setAttribute("scale", `${currentScale} ${currentScale} ${currentScale}`);
+    viewer.setAttribute("rotation", `0 0 0`);
+  }
+
+  function speakDesc() {
+    const msg = new SpeechSynthesisUtterance(descEl.innerText);
+    msg.lang = "en-IN";
+    window.speechSynthesis.speak(msg);
+  }
+
+  function resetAR() {
+    viewer.removeAttribute("src");
+    titleEl.innerText = "";
+    descEl.innerText = "";
+    currentScale = 0.5;
+    rotationY = 0;
+  }
+</script>
+
 </body>
 </html>
 
