@@ -1,97 +1,42 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>AR Heritage Demo (Browser 3D)</title>
-  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
-  <style>
-    body, html { margin:0; overflow:hidden; font-family: Arial; }
-    .menu {
-      position: fixed; bottom: 10px; left: 50%;
-      transform: translateX(-50%);
-      background: rgba(255,255,255,0.9);
-      padding: 12px; border-radius: 12px;
-      display: flex; flex-wrap: wrap; gap: 6px;
-      justify-content: center;
-    }
-    .menu button {
-      padding: 6px 12px; border: none; border-radius: 6px;
-      background: #1976d2; color: white; font-weight: bold;
-      cursor: pointer;
-    }
-    .menu button:hover { background: #0d47a1; }
-    .scale-display { font-size: 14px; font-weight: bold; margin: 0 10px; }
-  </style>
-</head>
-<body>
+  <head>
+    <meta charset="utf-8">
+    <title>WebXR AR Heritage Demo</title>
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-ar@1.8.2/dist/aframe-ar.min.js"></script>
+  </head>
+  <body style="margin:0; overflow:hidden;">
+    <a-scene
+      xr-mode-ui="enabled: true"
+      webxr="optionalFeatures: hit-test;"
+      vr-mode-ui="enabled: false"
+      renderer="antialias: true; alpha: true"
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false;"
+    >
+      <!-- Model -->
+      <a-entity id="taj"
+        gltf-model="url(assets/models/taj_mahal.glb)"
+        scale="0.05 0.05 0.05"
+        visible="false">
+      </a-entity>
 
-  <a-scene embedded background="color: #ECECEC">
-    <a-entity id="cameraRig">
-      <a-camera position="0 1.6 3" look-controls wasd-controls></a-camera>
-    </a-entity>
+      <!-- Camera with cursor -->
+      <a-camera cursor="fuse: false; rayOrigin: mouse;"></a-camera>
+    </a-scene>
 
-    <a-entity id="model" gltf-model="url(assets/models/taj_mahal.glb)"
-              scale="1 1 1" position="0 0 0"
-              rotation="0 0 0"
-              animation-mixer
-              drag-rotate
-    ></a-entity>
-  </a-scene>
+    <script>
+      // Place model on first surface tap
+      const scene = document.querySelector('a-scene');
+      const taj = document.getElementById('taj');
 
-  <div class="menu">
-    <!-- Monument Buttons -->
-    <button onclick="loadModel('taj_mahal.glb')">Taj Mahal</button>
-    <button onclick="loadModel('charminar.glb')">Charminar</button>
-    <button onclick="loadModel('india_gate.glb')">India Gate</button>
-    <button onclick="loadModel('ellora_caves.glb')">Ellora Caves</button>
-    <button onclick="loadModel('red_fort.glb')">Red Fort</button>
-    <!-- Scale Buttons -->
-    <button onclick="scaleDown()">-</button>
-    <span class="scale-display" id="scaleValue">Scale: 1</span>
-    <button onclick="scaleUp()">+</button>
-  </div>
-
-  <script>
-    let model = document.getElementById('model');
-    let currentScale = 1;
-    let currentModel = "taj_mahal.glb";
-
-    function loadModel(file) {
-      currentModel = file;
-      model.setAttribute('gltf-model', 'url(assets/models/' + file + ')');
-      currentScale = 1;
-      model.setAttribute('scale', {x: currentScale, y: currentScale, z: currentScale});
-      document.getElementById('scaleValue').innerText = "Scale: " + currentScale;
-    }
-
-    function scaleUp() {
-      currentScale = +(currentScale * 1.2).toFixed(1);
-      model.setAttribute('scale', {x: currentScale, y: currentScale, z: currentScale});
-      document.getElementById('scaleValue').innerText = "Scale: " + currentScale;
-    }
-
-    function scaleDown() {
-      currentScale = +(currentScale * 0.8).toFixed(1);
-      model.setAttribute('scale', {x: currentScale, y: currentScale, z: currentScale});
-      document.getElementById('scaleValue').innerText = "Scale: " + currentScale;
-    }
-
-    // Simple drag rotate
-    AFRAME.registerComponent('drag-rotate', {
-      init: function () {
-        this.isDragging = false;
-        this.previousX = 0;
-        this.el.addEventListener('mousedown', (e)=>{ this.isDragging = true; this.previousX = e.clientX; });
-        window.addEventListener('mouseup', ()=>{ this.isDragging = false; });
-        window.addEventListener('mousemove', (e)=>{
-          if(!this.isDragging) return;
-          let rotation = this.el.getAttribute('rotation');
-          rotation.y += (e.clientX - this.previousX) * 0.5;
-          this.el.setAttribute('rotation', rotation);
-          this.previousX = e.clientX;
-        });
-      }
-    });
-  </script>
-</body>
+      scene.addEventListener('click', function (e) {
+        if (!taj.getAttribute('visible')) {
+          taj.setAttribute('visible', true);
+          taj.setAttribute('position', '0 0 -1'); // place 1m in front
+        }
+      });
+    </script>
+  </body>
 </html>
