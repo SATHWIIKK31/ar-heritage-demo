@@ -40,9 +40,9 @@
 <!-- Monument selection cards -->
 <div class="cards">
   <div class="card">
-    <img src="goi.jpg" alt="Taj Mahal">
-    <h3>Taj Mahal</h3>
-    <button onclick="selectMonument('goi.glb','Taj Mahal')">Select</button>
+    <img src="goi.jpg" alt="Gateway of India">
+    <h3>Gateway of India</h3>
+    <button onclick="selectMonument('goi.glb','Gateway of India')">Select</button>
   </div>
   <div class="card">
     <img src="charminar.jpg" alt="Charminar">
@@ -55,14 +55,14 @@
     <button onclick="selectMonument('india_gate.glb','India Gate')">Select</button>
   </div>
   <div class="card">
-    <img src="ellora_caves.jpg" alt="Ellora Caves">
-    <h3>Ellora Caves</h3>
-    <button onclick="selectMonument('ellora_caves.glb','Ellora Caves')">Select</button>
+    <img src="skp.jpg" alt="Vishwa Shanti Stupa">
+    <h3>Vishwa Shanti Stupa</h3>
+    <button onclick="selectMonument('skp.glb','Vishwa Shanti Stupa')">Select</button>
   </div>
   <div class="card">
-    <img src="red_fort.jpg" alt="Red Fort">
-    <h3>Red Fort</h3>
-    <button onclick="selectMonument('red_fort.glb','Red Fort')">Select</button>
+    <img src="tajmahal.jpg" alt="Taj Mahal">
+    <h3>Taj Mahal</h3>
+    <button onclick="selectMonument('taj_mahal.glb','Taj Mahal')">Select</button>
   </div>
 </div>
 
@@ -93,12 +93,33 @@ let rotationY = 0;
 let currentMonument = '';
 
 const translations = {
-  'Taj Mahal': { en:'A symbol of love built by Shah Jahan in 1648, Agra.', hi:'1648 में शाहजहाँ द्वारा आगरा में प्रेम का प्रतीक बनाया गया।', te:'1648లో షాజహాన్ అగ్రాలో ప్రేమకు చిహ్నంగా నిర్మించబడింది.' },
-  'Charminar': { en:'Built in 1591, a historical mosque in Hyderabad.', hi:'1591 में बनाया गया, हैदराबाद का ऐतिहासिक मस्जिद।', te:'1591 లో హైదరాబాద్లో నిర్మించబడిన చార్మినార్.' },
-  'India Gate': { en:'War memorial built in 1931, New Delhi.', hi:'1931 में निर्मित युद्ध स्मारक, नई दिल्ली।', te:'1931లో నిర్మించబడిన యుద్ధ స్మారకం, న్యూ ఢిల్లీ.' },
-  'Ellora Caves': { en:'Rock-cut temples from 6th century, Maharashtra.', hi:'6वीं सदी के शिला-खुदाई मंदिर, महाराष्ट्र।', te:'6వ శతాబ్దం నుండి రాక్ కట్ ఆలయాలు, మహారాష్ట్ర.' },
-  'Red Fort': { en:'Mughal fort built in 1648, Delhi.', hi:'1648 में बनाया गया मुग़ल किला, दिल्ली।', te:'1648లో నిర్మించబడిన మొఘల్ కోట, ఢిల్లీ.' }
+  'Taj Mahal': {
+    en: 'A UNESCO World Heritage Site in Agra, built by Shah Jahan in 1648 as a symbol of love.',
+    hi: 'आगरा में शाहजहाँ द्वारा 1648 में प्रेम के प्रतीक के रूप में निर्मित विश्व धरोहर स्थल।',
+    te: 'ఆగ్రాలో 1648లో షాజహాన్ ప్రేమకు చిహ్నంగా నిర్మించిన యునెస్కో ప్రపంచ వారసత్వ స్థలం.'
+  },
+  'Charminar': {
+    en: 'Built in 1591 in Hyderabad by Muhammad Quli Qutb Shah, famous for its four grand arches.',
+    hi: '1591 में मोहम्मद कुली कुतुब शाह द्वारा हैदराबाद में निर्मित, चार विशाल मेहराबों के लिए प्रसिद्ध।',
+    te: '1591లో మహ్మద్ కులీ కుతుబ్ షా హైదరాబాదులో నిర్మించిన నాలుగు గొప్ప ఆర్చ్‌లతో ప్రసిద్ధి.'
+  },
+  'India Gate': {
+    en: 'War memorial in New Delhi, built in 1931 to honor 70,000 soldiers of the British Indian Army.',
+    hi: 'नई दिल्ली में 1931 में निर्मित युद्ध स्मारक, ब्रिटिश भारतीय सेना के 70,000 सैनिकों की याद में।',
+    te: '1931లో న్యూ ఢిల్లీలో నిర్మించబడిన యుద్ధ స్మారకం, 70,000 మంది భారత సైనికులను స్మరించుకోవడానికి.'
+  },
+  'Gateway of India': {
+    en: 'An arch monument built in 1924 in Mumbai to commemorate the visit of King George V and Queen Mary.',
+    hi: '1924 में मुंबई में किंग जॉर्ज पंचम और क्वीन मैरी की यात्रा की स्मृति में निर्मित मेहराब स्मारक।',
+    te: '1924లో ముంబైలో కింగ్ జార్జ్ V మరియు క్వీన్ మేరీ సందర్శనను స్మరించడానికి నిర్మించిన ఆర్చ్ స్మారకం.'
+  },
+  'Vishwa Shanti Stupa': {
+    en: 'A symbol of peace built in Rajgir, Bihar, one of the many Peace Pagodas built by Buddhist monks.',
+    hi: 'बिहार के राजगीर में निर्मित शांति का प्रतीक, बौद्ध भिक्षुओं द्वारा निर्मित कई शांति स्तूपों में से एक।',
+    te: 'బీహార్‌లోని రాజ్‌గిర్‌లో నిర్మించబడిన శాంతి ప్రతీక, బౌద్ధ భిక్షువులు నిర్మించిన అనేక శాంతి స్తూపాలలో ఒకటి.'
+  }
 };
+
 
 function selectMonument(src, name){
   viewer.setAttribute('src', src);
